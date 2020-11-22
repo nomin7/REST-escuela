@@ -1,6 +1,7 @@
 <?php namespace App\Controllers\API;
 
 use App\Models\GradoModel;
+use App\Models\ProfesorModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class Grados extends ResourceController
@@ -8,11 +9,18 @@ class Grados extends ResourceController
     public function __construct()
     {
         $this->model = $this->setModel(new GradoModel());
-    }
+    }  
+     
 	public function index()
-	{
-        $grados = $this->model->findAll();
-		return $this->respond($grados);
+	{   
+        $ProfesorModel = new ProfesorModel();
+        $data = array(
+            'grado' => $this->model->findAll(),
+            $ProfesorModel->findAll()
+        );
+        
+
+		return $this->respond($data);
     }
     
     public function create()

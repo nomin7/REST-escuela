@@ -19,7 +19,7 @@ class EstudianteModel extends Model
         'apellido'      => 'required|alpha_space|min_length[2]|max_length[75]',
         'dui'           => 'required|min_length[9]|max_length[10]',
         'genero'        => 'required|alpha_space|min_length[1]|max_length[1]',
-        'carnet'        => 'required|min_length[8]|max_length[9]',
+        'carnet'        => 'required|min_length[8]|max_length[9]|regex_match[/^[a-zA-Z]+[0-9]+[0-9]/]',
         'grado_id'      => 'required|max_length[1]'
     ];
 
