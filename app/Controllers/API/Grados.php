@@ -1,5 +1,6 @@
 <?php namespace App\Controllers\API;
 
+use App\Models\EstudianteModel;
 use App\Models\GradoModel;
 use App\Models\ProfesorModel;
 use CodeIgniter\RESTful\ResourceController;
@@ -14,13 +15,14 @@ class Grados extends ResourceController
 	public function index()
 	{   
         $ProfesorModel = new ProfesorModel();
-        $data = array(
-            'grado' => $this->model->findAll(),
-            $ProfesorModel->findAll()
-        );
-        
 
-		return $this->respond($data);
+        $getGrados = $this->model->findAll();
+        foreach ($getGrados as $value) {
+            $value["profesor"] = $ProfesorModel->find($value["profesor_id"]);
+            $grados[] = $value;
+        }
+
+        return $this->respond($grados);
     }
     
     public function create()
@@ -47,7 +49,6 @@ class Grados extends ResourceController
             $grado = $this->model->find($id);
             if ($grado == null)
                 return $this->failValidationError('No se ha encontrado un cliente con el '.$id);
-
             return $this->respond($grado);
 
         } catch (\Exception $e) {
@@ -102,6 +103,27 @@ class Grados extends ResourceController
         } catch (\Exception $e) {
             return $this->failServerError('Ha ocurrido un error en el servidor');
         }
-	}
+    }
+    
+    public function show($id = null){
+        try {
+            if ($id == null)
+                return $this->failValidationError('No se ha pasado un Id valido');
+            
+            // $grado = $this->model->find($id);
+            $grado = $this->model->select('id, grado, seccion')->find($id);
+            if ($grado == null)
+                return $this->failValidationError('No se ha encontrado un cliente con el '.$id);
+
+            $ProfesorModel = new ProfesorModel();
+            $EstudianteModel = new EstudianteModel();
+            $grado['profesor'] = $ProfesorModel->select("nombre, profesion, telefono")->find($grado['profesor_id']);
+            $grado['estudiantes'] = $EstudianteModel->where('grado_id', $grado['id'])->select("nombre, genero, carnet")->findAll();
+            return $this->respond($grado);
+
+        } catch (\Exception $e) {
+            return $this->failServerError('Ha ocurrido un error en el servidor');
+        }
+    }
 
 }

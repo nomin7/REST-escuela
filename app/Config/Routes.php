@@ -46,6 +46,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\API'], function($routes){
 	$routes->get('grados/edit/(:num)', 'Grados::edit/$1');
 	$routes->put('grados/update/(:num)', 'Grados::update/$1');
 	$routes->delete('grados/delete/(:num)', 'Grados::delete/$1');
+	$routes->get('grados/show/(:num)', 'Grados::show/$1');
+
 
 	//rutas para Estudiantes
 	$routes->get('estudiantes', 'Estudiantes::index');
